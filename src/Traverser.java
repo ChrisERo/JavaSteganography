@@ -34,6 +34,19 @@ public abstract class Traverser {
     }
 
     /**
+     * Gets lsb for specified color channel of pixelValue
+     *
+     * @param pixelValue RGB value of pixel in question, assumed to be TYPE_3BYTE_BGR
+     * @param c color channel as described in makeMask
+     * @return value of lsb for specified color channel
+     */
+    public int getPixelBit(int pixelValue, int c) {
+        int result = (pixelValue >> (c * BITS_PER_DIMENSION)) & 1;
+        assert(result == 0 || result == 1);
+        return result;
+    }
+
+    /**
      * Performs some operation (determined by child classes) based on the current
      * pixel/color we are on and internal state of Traverser object. Then indicates
      * whether traversal should end.

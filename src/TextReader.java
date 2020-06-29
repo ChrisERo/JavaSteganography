@@ -42,7 +42,7 @@ public class TextReader {
             char currentChar = this.message.charAt(this.index);
             int movement = Character.SIZE - 1 - this.cIndex;
             char filter = (char)(1 << movement);
-            result = currentChar & filter >> movement;
+            result = (currentChar & filter) >> movement;
         }
 
         this.cIndex += 1;
@@ -51,6 +51,7 @@ public class TextReader {
             this.index += 1;
         }
 
+        assert(result == 0 || result == 1);
         return result;
     }
 }

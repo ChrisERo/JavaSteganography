@@ -4,7 +4,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 /**
- * Handles writing messages onto an chosen jpeg image
+ * Handles writing messages onto an chosen png image
+ * TODO: Investigate adding JPEG functionality at a later date
  */
 public class MessageWriter extends Traverser{
     private TextReader textReader;  // Handles getting next bit of message
@@ -45,11 +46,9 @@ public class MessageWriter extends Traverser{
         }
 
         int nextBit = this.textReader.readBit();
-        assert(nextBit == 0 || nextBit == 1);
         int pixelValue = this.targetImage.getRGB(x, y);
-
         // Make sure pixelValue's lsb at color c differs from nextBit of message
-        if (pixelValue >> (c * BITS_PER_DIMENSION) % 2 != nextBit) {
+        if (this.getPixelBit(pixelValue, c) != nextBit) {
             pixelValue = pixelValue ^ this.makeMask(c);
             this.targetImage.setRGB(x, y, pixelValue);
         }
@@ -66,11 +65,12 @@ public class MessageWriter extends Traverser{
     private int getMaxLength() {
         if (this.targetImage == null)
             return 0;
-        int result = this.targetImage.getHeight() * this.targetImage.getWidth() / BITS_PER_DIMENSION;
+        int result = this.targetImage.getHeight() * this.targetImage.getWidth();
         int imgType = this.targetImage.getType();
-        if (imgType == BufferedImage.TYPE_3BYTE_BGR) { // TODO: figure out if others need this treatment
-            result *= 3;
+        if (imgType == BufferedImage.TYPE_4BYTE_ABGR) { // TODO: figure out if others need this treatment
+            result *= DIMENSIONS;
         }
+        result /= Character.SIZE;
         return result;
     }
 
@@ -107,9 +107,11 @@ public class MessageWriter extends Traverser{
      * Test
      */
     public static void main(String[] args) throws IOException {
-        MessageWriter mw = new MessageWriter("I love you very very very very very very very " +
-                "much", "IMG_2485.jpeg", "fakeImage.jpeg");
+        MessageWriter mw = new MessageWriter("I love you very very very very very much!", "S.png", "fakeImage.png");
         mw.writeMessage();
-
+        System.out.println("NEXT");
+        MessageReader mr = new MessageReader("fakeImage.png");
+        String result = mr.readMessage();
+        System.out.println(result);
     }
 }
