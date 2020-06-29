@@ -40,7 +40,7 @@ public class MessageWriter extends Traverser{
      * @param y vertical coordinate of current piexel of traverse()
      * @return true if traverse() should terminate and false otherwise
      */
-    public boolean injectedFunction(int c, int x, int y) {
+    protected boolean injectedFunction(int c, int x, int y) {
         if (this.textReader.shouldEnd()) {
             return true;
         }
@@ -107,10 +107,10 @@ public class MessageWriter extends Traverser{
      * Test
      */
     public static void main(String[] args) throws IOException {
-        MessageWriter mw = new MessageWriter("I love you very very very very very much!", "S.png", "fakeImage.png");
+        MessageWriter mw = new MessageWriter("I love you very very very very very much!", "S.png", "testImage.png");
         mw.writeMessage();
         System.out.println("NEXT");
-        MessageReader mr = new MessageReader("fakeImage.png");
+        MessageReader mr = new MessageReader("testImage.png");
         String result = mr.readMessage();
         System.out.println(result);
     }

@@ -16,7 +16,7 @@ public abstract class Traverser {
 
     public Traverser(int colors, String imagePathName) throws IOException {
         this.targetImage = ImageIO.read(new File(imagePathName));
-        assert(this.targetImage.getType() == BufferedImage.TYPE_3BYTE_BGR);
+        assert(this.targetImage.getType() == BufferedImage.TYPE_4BYTE_ABGR);
 
         this.dimensions = colors;
     }
@@ -29,7 +29,7 @@ public abstract class Traverser {
      *         all other values are 0
      */
     public int makeMask(int c) {
-        assert(c > 0 && c <=2);
+        assert(c >= 0 && c <=2);
         return 1 << (c * BITS_PER_DIMENSION);
     }
 
@@ -58,7 +58,7 @@ public abstract class Traverser {
      * @param y vertical coordinate of current piexel of traverse()
      * @return true if traverse should terminate and false otherwise
      */
-    public abstract boolean injectedFunction(int c, int x, int y);
+    protected abstract boolean injectedFunction(int c, int x, int y);
 
     /**
      * Traverses each pixel of targetImage one color channel, performing injectedFunction

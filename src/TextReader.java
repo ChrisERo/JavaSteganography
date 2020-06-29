@@ -13,6 +13,7 @@ public class TextReader {
      *             character
      */
     public TextReader(String mssg) {
+        assert(mssg != null && mssg.length() > 0);
         this.message = mssg;
         this.index = 0;
         this.cIndex = 0;

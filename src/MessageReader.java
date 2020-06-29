@@ -8,8 +8,8 @@ import java.util.LinkedList;
 public class MessageReader extends Traverser {
     private List<Character> hiddenText; // List of characters found while reading message
     private String sourcePathName;
-    private char buffer; // stores
-    private byte currentBit;
+    private char buffer; // stores character to add to hiddenText
+    private byte currentBit; // number of bits that have been placed into buffer
 
     public MessageReader (String imagePathName) throws IOException {
         super(DIMENSIONS, imagePathName);
@@ -32,7 +32,7 @@ public class MessageReader extends Traverser {
      * @param y vertical coordinate of current piexel of traverse()
      * @return true if traverse should terminate and false otherwise
      */
-    public boolean injectedFunction(int c, int x, int y) {
+    protected boolean injectedFunction(int c, int x, int y) {
         // Extract bit value in question and add to buffer
         int pixelValue = this.targetImage.getRGB(x, y);
 
@@ -61,7 +61,7 @@ public class MessageReader extends Traverser {
      *
      * @return String representation of text in hiddenText
      */
-    public String getMessageFromList() {
+    private String getMessageFromList() {
         StringBuilder sb = new StringBuilder();
         for (Character c: this.hiddenText) {
             sb.append(c.charValue());
