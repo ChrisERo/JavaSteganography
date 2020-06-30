@@ -9,7 +9,7 @@ import java.io.IOException;
 public class TraverserTester {
     @Test
     public void TestMakeMask() throws IOException {
-        Traverser tr = new MessageReader("testImage.png");
+        Traverser tr = new MessageReader("testPic1.png");
         int[][] colorChannels = new int[][]{{0, 1}, {1, 256}, {2, 65536}};
         for(int[] data: colorChannels) {
             int channel = data[0];
@@ -21,7 +21,7 @@ public class TraverserTester {
 
     @Test
     public void TestGetPixelBit() throws IOException {
-        Traverser tr = new MessageReader("testImage.png");
+        Traverser tr = new MessageReader("testPic1.png");
 
         int[] pixelValues = new int[]{
                 32 + (0xfb << 8) + (0xaf << 16),
