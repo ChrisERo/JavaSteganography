@@ -93,7 +93,7 @@ public class MessageWriter extends Traverser{
      * @throws IOException
      */
     public void writeMessage() throws IOException {
-        // Make message fit in image
+        // Make message, including end character fit in image
         int maxLength = this.getMaxLength(); // max length of any message in the writer's image
         if (this.textReader.message.length() >= maxLength) {
             this.textReader.message = this.textReader.message.substring(0, maxLength - 1);
@@ -101,17 +101,5 @@ public class MessageWriter extends Traverser{
 
         this.traverse();
         this.writeNewImage();
-    }
-
-    /**
-     * Test
-     */
-    public static void main(String[] args) throws IOException {
-        MessageWriter mw = new MessageWriter("I love you very very very very very much!", "S.png", "testImage.png");
-        mw.writeMessage();
-        System.out.println("NEXT");
-        MessageReader mr = new MessageReader("testImage.png");
-        String result = mr.readMessage();
-        System.out.println(result);
     }
 }
