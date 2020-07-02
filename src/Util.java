@@ -5,8 +5,10 @@ public class Util {
     /**
      * Checks to see there's a string element whose value equals value
      *
+     * Assumes values does not contain a null element
+     *
      * @param value string to look for in values
-     * @param values array in which to search for value
+     * @param values array in which to search for value. Cannot contain null elements
      * @return true if there exists element e in values s.t. e.equals(value), else false
      */
     public static boolean containsString(String value, String[] values) {
@@ -35,7 +37,7 @@ public class Util {
         if (dotIndex == -1) {
             return false;
         } else {
-            return !filePath.substring(dotIndex + 1).equals(fileType);
+            return filePath.substring(dotIndex + 1).equals(fileType);
         }
     }
 

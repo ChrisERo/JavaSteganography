@@ -37,11 +37,11 @@ public class JavaMessageHider {
         } else if (!Util.containsString(args[COMMAND_INDEX], READ_COMMANDS) &&
                 !Util.containsString(args[COMMAND_INDEX], WRITE_COMMANDS)) {
             return String.format("INVALID COMMAND %s", args[COMMAND_INDEX]);
-        } else if (Util.hasRightFileFormat(args[IMG_FILE_INDEX], "png")) {
+        } else if (!Util.hasRightFileFormat(args[IMG_FILE_INDEX], "png")) {
             return String.format("INVALID IMAGE TYPE [%s], MUST BE .png",
                     args[COMMAND_INDEX]);
         } else if (args.length == MAX_ARGS_LENGTH &&
-                Util.hasRightFileFormat(args[MSSG_FILE_INDEX], "txt")) {
+                !Util.hasRightFileFormat(args[MSSG_FILE_INDEX], "txt")) {
             return String.format("INVALID MESSAGE SOURCE/DESTINATION TYPE [%s], " +
                             "MUST BE .txt", args[MSSG_FILE_INDEX]);
         }
@@ -101,7 +101,7 @@ public class JavaMessageHider {
         try {
             String imgFilePath = args[IMG_FILE_INDEX];
             String message = getMessage(args);
-            MessageWriter writer = new MessageWriter(imgFilePath, message, "out.png");
+            MessageWriter writer = new MessageWriter(message, imgFilePath, "out.png");
             writer.writeMessage();
             return true;
         }
