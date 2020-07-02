@@ -27,19 +27,21 @@ public class JavaMessageHider {
      * regardless of the existence of specific files. If either the command, png, or txt
      * arguments re invalid, return the corresponding error message
      *
+     * WARNING: function is public only for testing purposes
+     *
      * @param args arguments given by user when executing JavaMessageHider
      * @return null if there are no syntactic errors in args, a String with the error
      *         message otherwise
      */
-    private static String checkInputHelper(String [] args) {
-        if (args.length != MIN_ARGS_LENGTH && args.length != MAX_ARGS_LENGTH) {
+    public static String checkInputHelper(String [] args) {
+        if (args == null || args.length != MIN_ARGS_LENGTH && args.length != MAX_ARGS_LENGTH) {
             return String.format("INVALID NUMBER OF ARGUMENTS");
         } else if (!Util.containsString(args[COMMAND_INDEX], READ_COMMANDS) &&
                 !Util.containsString(args[COMMAND_INDEX], WRITE_COMMANDS)) {
             return String.format("INVALID COMMAND %s", args[COMMAND_INDEX]);
         } else if (!Util.hasRightFileFormat(args[IMG_FILE_INDEX], "png")) {
             return String.format("INVALID IMAGE TYPE [%s], MUST BE .png",
-                    args[COMMAND_INDEX]);
+                    args[IMG_FILE_INDEX]);
         } else if (args.length == MAX_ARGS_LENGTH &&
                 !Util.hasRightFileFormat(args[MSSG_FILE_INDEX], "txt")) {
             return String.format("INVALID MESSAGE SOURCE/DESTINATION TYPE [%s], " +
