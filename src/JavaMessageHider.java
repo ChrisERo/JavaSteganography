@@ -12,11 +12,14 @@ public class JavaMessageHider {
     // Indecies of key parts of argument
     private static final int COMMAND_INDEX = 0;  // Whether to read or write
     private static final int IMG_FILE_INDEX = 1;  // Write or read message in this file
-    private static final int MSSG_FILE_INDEX = 2; // [opt.] write message of image here
+    private static final int MIDDLE_INDEX = 2; // [opt.] write new image to here, or
+                                                 // get message for this file
+    private static final int MSSG_FILE_INDEX = 3; // [opt. write only]
+                                                  // get message of image here
 
     // Min and max number of arguments passed to main call
     private static final int MIN_ARGS_LENGTH = 2;
-    private static final int MAX_ARGS_LENGTH = 3;
+    private static final int MAX_ARGS_LENGTH = 4;
 
     // Commands used to read or write messages to an image
     private static final String [] READ_COMMANDS = new String[] {"-r", "-read"};
@@ -34,14 +37,27 @@ public class JavaMessageHider {
      *         message otherwise
      */
     public static String checkInputHelper(String [] args) {
-        if (args == null || args.length != MIN_ARGS_LENGTH && args.length != MAX_ARGS_LENGTH) {
+        if (args == null ||
+                args.length < MIN_ARGS_LENGTH ||
+                args.length > MAX_ARGS_LENGTH) {
             return String.format("INVALID NUMBER OF ARGUMENTS");
         } else if (!Util.containsString(args[COMMAND_INDEX], READ_COMMANDS) &&
                 !Util.containsString(args[COMMAND_INDEX], WRITE_COMMANDS)) {
             return String.format("INVALID COMMAND %s", args[COMMAND_INDEX]);
-        } else if (!Util.hasRightFileFormat(args[IMG_FILE_INDEX], "png")) {
+        }
+
+        boolean isReadCommand = Util.containsString(args[COMMAND_INDEX], READ_COMMANDS);
+        if (!Util.hasRightFileFormat(args[IMG_FILE_INDEX], "png")) {
             return String.format("INVALID IMAGE TYPE [%s], MUST BE .png",
                     args[IMG_FILE_INDEX]);
+        } else if ((args.length == MAX_ARGS_LENGTH - 1 &&
+                !Util.hasRightFileFormat(args[MIDDLE_INDEX], "txt") &&
+                (isReadCommand ||
+                        !Util.hasRightFileFormat(args[MIDDLE_INDEX], "png"))) ||
+                (args.length == MAX_ARGS_LENGTH && (isReadCommand ||
+                        !Util.hasRightFileFormat(args[MIDDLE_INDEX], "png")))
+        ) {
+            return "INVALID PARAMETERS CONCERNING THIRD PARAMETER!!!";
         } else if (args.length == MAX_ARGS_LENGTH &&
                 !Util.hasRightFileFormat(args[MSSG_FILE_INDEX], "txt")) {
             return String.format("INVALID MESSAGE SOURCE/DESTINATION TYPE [%s], " +
@@ -78,12 +94,16 @@ public class JavaMessageHider {
      */
     private static String getMessage(String[] args) throws IOException {
         Scanner in;
-        if (args.length == MIN_ARGS_LENGTH) {
+        if (args.length == MIN_ARGS_LENGTH ||
+                (args.length < MAX_ARGS_LENGTH &&
+                Util.hasRightFileFormat(args[MIDDLE_INDEX], "png"))) {
            in = new Scanner(System.in);
-            System.out.println("Write you message below: ");
-            return in.nextLine();
+           System.out.println("Write you message below: ");
+           return in.nextLine();
         } else {
-            in = new Scanner(new File(args[MSSG_FILE_INDEX]));
+            int mssgIndex = args.length == MAX_ARGS_LENGTH ?
+                    MSSG_FILE_INDEX : MIDDLE_INDEX;
+            in = new Scanner(new File(args[mssgIndex]));
             String messageContent = "";
             while (in.hasNextLine()) {
                 messageContent += in.nextLine() + '\n';
@@ -102,13 +122,23 @@ public class JavaMessageHider {
     private static boolean write(String [] args) {
         try {
             String imgFilePath = args[IMG_FILE_INDEX];
+            // Set destinationPath to destinationPath specified by user or to imgFilePath
+            // if no image is given
+            String destinationPath;
+            if (args.length > MIN_ARGS_LENGTH &&
+                    Util.hasRightFileFormat(args[MIDDLE_INDEX], "png") ) {
+                destinationPath = args[MIDDLE_INDEX];
+            } else {
+                destinationPath = imgFilePath; // write to self
+            }
             String message = getMessage(args);
-            MessageWriter writer = new MessageWriter(message, imgFilePath, "out.png");
-            writer.writeMessage();
-            return true;
-        }
 
-        catch (IOException e) {
+            MessageWriter writer = new MessageWriter(
+                    message, imgFilePath, destinationPath);
+            writer.writeMessage();
+
+            return true;
+        } catch (IOException e) {
             System.out.println("ONE OF THE FILES SELECTED DOES NOT EXIST " +
                     "OR IS POORLY FORMATTED");
             return false;
@@ -121,6 +151,7 @@ public class JavaMessageHider {
 
     /**
      * Writes message to screen, and maybe to a text file if one is specified in args
+     * Currently used as helper function for read()
      *
      * @param mssg message to write on the screen, and maybe a file
      * @param args valid list of arguments for JavaMessageHider program

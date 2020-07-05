@@ -16,7 +16,7 @@ class JavaMessageHiderTest {
                 Arguments.arguments("-r".split(" "), "INVALID NUMBER OF ARGUMENTS"),
                 Arguments.arguments(null, "INVALID NUMBER OF ARGUMENTS"),
                 Arguments.arguments("-w d/myImg.png t.txt t.txt".split(" "),
-                        "INVALID NUMBER OF ARGUMENTS"),
+                        "INVALID PARAMETERS CONCERNING THIRD PARAMETER!!!"),
 
                 Arguments.arguments("-a the/myImg.png t.txt".split(" "),
                         "INVALID COMMAND -a"),
@@ -29,9 +29,16 @@ class JavaMessageHiderTest {
                         "INVALID IMAGE TYPE [the/myImg.txt], MUST BE .png"),
 
                 Arguments.arguments("-r myImg.png t.jpeg".split(" "),
-                        "INVALID MESSAGE SOURCE/DESTINATION TYPE [t.jpeg], MUST BE .txt"),
-                Arguments.arguments("-w myImg.png t.png".split(" "),
-                        "INVALID MESSAGE SOURCE/DESTINATION TYPE [t.png], MUST BE .txt"),
+                        "INVALID PARAMETERS CONCERNING THIRD PARAMETER!!!"),
+                Arguments.arguments("-w myImg.png t.png".split(" "), null),
+                Arguments.arguments("-w myImg.png d.png t.txt".split(" "), null),
+                Arguments.arguments("-write myImg.png d.png t.txt".split(" "), null),
+                Arguments.arguments("-r myImg.png d.png t.txt".split(" "),
+                        "INVALID PARAMETERS CONCERNING THIRD PARAMETER!!!"),
+                Arguments.arguments("-read myImg.png d.png t.txt".split(" "),
+                        "INVALID PARAMETERS CONCERNING THIRD PARAMETER!!!"),
+                Arguments.arguments("-w myImg.png d.txt t.txt".split(" "),
+                        "INVALID PARAMETERS CONCERNING THIRD PARAMETER!!!"),
         };
     }
 
